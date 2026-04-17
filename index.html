@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WeatChat</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-database-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-storage-compat.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/emoji-mart@latest/dist/browser.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/emoji-mart@latest/dist/browser.css">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon/fonts/remixicon.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="gradient-bg text-white min-h-screen overflow-hidden font-sans">
+
+
+   <div id="emoji-bg"></div>
+
+
+    <!-- LOGIN SCREEN -->
+    <div id="login-screen" class="fixed inset-0 flex items-center justify-center z-50 bg-black/70">
+        <div class="glass rounded-3xl p-10 max-w-md w-full mx-4 text-center neon-border">
+            <div class="flex items-center justify-center gap-3 mb-8">
+                <!-- <div class="w-12 h-12 bg-cyan-400 rounded-2xl flex items-center justify-center text-3xl shadow-[0_0_25px_#00f7ff]"><i class="ri-chat-smile-2-line text-xl text-black"></i></div> -->
+                 <div class="w-9 h-9 bg-gradient-to-br from-cyan-400 to-violet-400 rounded-2xl flex items-center justify-center shadow-md">  <i class="ri-chat-smile-2-line text-xl text-black"></i> </div>
+                <!-- <h1 class="text-5xl font-semibold tracking-[-2px] logo-glow" style="font-family: 'Space Grotesk', sans-serif;">WeatChat</h1> -->
+                 <h1 class="logo-text-big">WeatChat</h1>
+            </div>
+            
+            <h2 class="text-3xl font-medium mb-2">Welcome to the future</h2>
+            <p class="text-slate-400 mb-10">WeatChat. Real-time Private Chating Web App</p>
+            
+            <button onclick="handleGoogleLogin()" 
+                    class="w-full bg-white text-slate-900 hover:bg-white/90 font-medium py-4 px-8 rounded-2xl flex items-center justify-center gap-3 text-lg shadow-xl">
+               <i class="ri-google-fill"></i> Continue with Google 
+            </button>
+        </div>
+    </div>
+
+    <!-- MAIN APP -->
+    <div id="main-app" class="hidden flex h-screen">
+        
+        <!-- SIDEBAR -->
+        <div class="w-80 glass border-r border-white/10 flex flex-col h-full">
+            
+            <!-- Sidebar Header -->
+            <div class="p-5 border-b border-white/10 flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <div class="w-9 h-9 bg-gradient-to-br from-cyan-400 to-violet-400 rounded-2xl flex items-center justify-center shadow-md">
+    <i class="ri-chat-smile-2-line text-xl text-black"></i>
+</div>
+                    <!-- <h1 class="text-3xl font-semibold tracking-[-1px] logo-glow" style="font-family: 'Space Grotesk', sans-serif;">WeatChat</h1> -->
+                     <h1 class="logo-text">WeatChat</h1>
+                </div>
+                
+                <div class="flex items-center gap-3">
+                      <div onclick="showProfileModal()" class="w-9 h-9 rounded-2xl cursor-pointer border-2 border-cyan-400 overflow-hidden neon-border">
+                        <img id="current-user-photo" src="https://via.placeholder.com/128?text=👤" alt="You" class="w-full h-full object-cover">
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Search -->
+            <div class="px-5 py-4">
+                <div class="glass rounded-3xl flex items-center px-4 py-2 text-sm">
+                    <span class="text-cyan-400 mr-2"><i class="ri-user-search-line"></i></span>
+                    <input id="search-input" 
+                           onkeyup="filterUsers()"
+                           type="text" 
+                           placeholder="Search users (e.g. raj)" 
+                           class="flex-1 bg-transparent outline-none text-sm placeholder-slate-400">
+                </div>
+            </div>
+            
+            <!-- Users list -->
+            <div class="flex-1 overflow-y-auto px-3 py-2 space-y-1" id="users-list">
+                <!-- Populated by JS -->
+            </div>
+            
+            <!-- Share Profile Button -->
+            <div class="p-5 border-t border-white/10">
+                <button onclick="copyShareLink()" 
+                        class="w-full flex items-center justify-center gap-3 bg-gradient-to-r from-cyan-400 to-violet-400 text-black py-4 rounded-3xl font-semibold hover:scale-105 active:scale-95">
+                    <span class="text-xl"><i class="ri-links-fill"></i></span>
+                    <span>Share My Profile</span>
+                </button>
+            </div>
+        </div>
+        
+        <!-- CHAT AREA -->
+        <div class="flex-1 flex flex-col">
+            <div id="chat-header" class="h-16 glass border-b border-white/10 px-6 flex items-center justify-between hidden">
+                <div class="flex items-center gap-4">
+                    <img id="chat-header-photo" src="https://via.placeholder.com/48?text=👤" alt="" class="w-9 h-9 rounded-2xl object-cover border border-white/30">
+                    <div>
+                        <h3 id="chat-header-name" class="font-semibold text-lg"></h3>
+                        <div id="chat-header-status" class="text-xs text-emerald-400"></div>
+                    </div>
+                </div>
+                <button onclick="closeChat()" class="text-2xl">✕</button>
+            </div>
+            
+            <div id="welcome-screen" class="flex-1 flex flex-col items-center justify-center text-center px-8">
+                <div class="text-8xl mb-8"><i class="ri-chat-smile-2-line"></i></div>
+                <!-- <h2 class="text-4xl font-semibold mb-3 logo-glow">WeatChat</h2> -->
+                 <h2 class="logo-text">WeatChat</h2> <br>
+                <p class="text-slate-400">Search users or select from the list to start chatting</p>
+                <p>© <span id="year"></span> WeatChat | Made with L❤️VE by Anmol | All Rights Reserved.</p>
+            </div>
+            
+            <div id="chat-screen" class="hidden flex-1 flex flex-col">
+                <div id="messages-container" class="flex-1 overflow-y-auto p-6 space-y-6"></div>
+                
+                <div class="glass border-t border-white/10 p-4 flex items-center gap-3">
+                     <button onclick="openGifPicker()" class="icon-btn">
+                        <i class="ri-emoji-sticker-line"></i>
+                     </button>
+                    <input type="file" id="image-upload" accept="image/*" class="hidden" onchange="handleImageUpload(event)">
+                    
+                    <div class="flex-1 glass rounded-3xl px-6 py-3">
+                        <input id="message-input" type="text" 
+                               onkeydown="if(event.key === 'Enter') sendTextMessage()" 
+                               placeholder="Type a message..." 
+                               class="w-full bg-transparent outline-none">
+                    </div>
+                    
+                    <!-- <button onclick="sendTextMessage()" class="w-11 h-11 bg-cyan-400 text-black rounded-3xl text-2xl font-bold"><i class="ri-send-ins-line"></i></button> -->
+                    <button onclick="sendTextMessage()" class="icon-btn"> <i class="ri-send-plane-fill text-xl"></i></button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Name Modal -->
+    <div id="name-modal" class="hidden fixed inset-0 bg-black/70 flex items-center justify-center z-[9999]">
+        <div class="glass rounded-3xl p-8 max-w-sm w-full mx-4">
+            <h3 class="text-2xl font-medium mb-2">Welcome to WeatChat 👋</h3>
+            <p class="text-slate-400 mb-6">Choose your permanent display name.</p>
+            <input id="display-name-input" type="text" class="w-full glass rounded-2xl px-5 py-4 text-lg outline-none mb-6" placeholder="Enter your name">
+            <div class="flex gap-3">
+                <button onclick="hideNameModal()" class="flex-1 py-4 text-slate-400">Cancel</button>
+                <button onclick="saveDisplayName()" class="flex-1 bg-white text-slate-950 py-4 rounded-2xl font-semibold">Save <i class="ri-user-smile-line"></i></button>
+            </div>
+        </div>
+    </div>
+
+
+<div id="gifModal" class="hidden fixed inset-0 bg-black/70 flex items-center justify-center z-50">
+    <div class="glass p-5 rounded-3xl w-[400px] max-h-[500px] overflow-y-auto">
+        
+        <input type="text" id="gifSearch" placeholder="Search GIF..." 
+               onkeyup="searchGif()" 
+               class="w-full p-3 rounded-xl mb-4 bg-black/30 text-white">
+
+        <div id="gifResults" class="grid grid-cols-2 gap-3"></div>
+
+        <button onclick="closeGifPicker()" class="mt-4 w-full bg-red-500 p-2 rounded-xl">
+            Close
+        </button>
+    </div>
+</div>
+
+
+
+<!-- 🔥 ADD THIS JUST BEFORE </body> -->
+
+<!-- PROFILE MODAL -->
+<div id="profileModal" class="hidden fixed inset-0 bg-black/70 flex items-center justify-center z-50">
+  <div class="glass rounded-3xl p-6 w-[350px] text-center">
+
+    <h2 class="text-2xl mb-4">Your Profile</h2>
+
+    <!-- Profile Image -->
+    <img id="profilePreview" src="" 
+         class="w-24 h-24 mx-auto rounded-full mb-4 border-2 border-cyan-400">
+
+     
+
+    <!-- Name -->
+    <input id="editName" type="text" placeholder="Update name"
+           class="w-full p-3 rounded-xl bg-black/30 text-white mb-4">
+
+    <!-- Buttons -->
+    <button onclick="updateName()" 
+            class="w-full mb-3 bg-cyan-400 text-black p-3 rounded-xl">
+      Update Name
+    </button>
+
+    <button onclick="logout()" 
+            class="w-full bg-red-500 p-3 rounded-xl">
+     <i class="ri-logout-circle-r-line"></i> Logout 
+    </button>
+
+    <button onclick="closeProfileModal()" 
+            class="w-full mt-3 text-gray-400">
+      Close
+    </button>
+
+  </div>
+</div>
+
+
+
+    <script src="script.js"></script>
+</body>
+</html>
