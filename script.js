@@ -12,13 +12,14 @@
 
 
         const firebaseConfig = {
-            apiKey: "AIzaSyAIwDDBXWiPEYY8Jrc-zc5VBn7ltzbG70c",
-            authDomain: "weatchat-5aab7.firebaseapp.com",
-            projectId: "weatchat-5aab7",
-            storageBucket: "weatchat-5aab7.firebasestorage.app",
-            messagingSenderId: "191457153693",
-            appId: "1:191457153693:web:8bce5b0ed3440949507a74"
-        };
+  apiKey: "AIzaSyCJXo31QFHzYoddFzPL1kpADJnRXTmNeXQ",
+  authDomain: "weatchat-51532.firebaseapp.com",
+  projectId: "weatchat-51532",
+  storageBucket: "weatchat-51532.firebasestorage.app",
+  messagingSenderId: "284999544512",
+  appId: "1:284999544512:web:369bade75772203e64c725",
+  measurementId: "G-DMJ5ER1PVE"
+};
 
         let app, auth, db, storage;
         let currentUser = null;
