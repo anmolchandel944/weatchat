@@ -11,7 +11,8 @@
   
 
 
-        const firebaseConfig = {
+        
+const firebaseConfig = {
   apiKey: "AIzaSyCJXo31QFHzYoddFzPL1kpADJnRXTmNeXQ",
   authDomain: "weatchat-51532.firebaseapp.com",
   projectId: "weatchat-51532",
@@ -132,7 +133,11 @@
      function openChat(user) { 
     currentChatUser = user;
     currentChatId = [currentUser.uid, user.uid].sort().join('_');
+        if(window.innerWidth < 768){
 
+    sidebar.classList.remove("active");
+
+}
     // ✅ RESET ONLY HERE (correct place)
     document.getElementById('messages-container').innerHTML = "";
 
@@ -348,7 +353,7 @@ function sendGif(url) {
 
 
 
-const emojis = ["💬", "🔥", "✨", "🚀", "💻", "📱", "❤️", "😏", "👀", "🎯"];
+const emojis = ["💬", "🔥", "💔", "✨", "🚀", "😎", "💻", "😘",  "📱", "❤️", "😏", "👀", "🎯",  "🤭", "🧟"];
 
 function createEmoji() {
     const emoji = document.createElement("div");
@@ -373,3 +378,126 @@ setInterval(createEmoji, 800);
 // footer 
 document.getElementById("year").innerText = new Date().getFullYear();
 
+
+
+ 
+const menuBtn = document.getElementById("menu-btn");
+const hamburgerIcon = document.getElementById("hamburger-icon");
+const sidebar = document.getElementById("sidebar");
+const chatContainer = document.getElementById("chat-container");
+
+// Dragging Variables
+let isDragging = false;
+let xOffset = 16;
+let yOffset = 16;
+let initialX = 0;
+
+function openMenu() {
+    sidebar.classList.add("active");
+    menuBtn.classList.add("active");        // ← Rotation Trigger
+    chatContainer.classList.add("hidden");
+}
+
+function closeMenu() {
+    sidebar.classList.remove("active");
+    menuBtn.classList.remove("active");     // ← Reset Rotation
+    chatContainer.classList.remove("hidden");
+}
+
+// Click Toggle
+menuBtn.addEventListener("click", (e) => {
+    if (!isDragging) {
+        if (sidebar.classList.contains("active")) {
+            closeMenu();
+        } else {
+            openMenu();
+        }
+    }
+});
+
+// ==================== DRAG HAMBURGER ICON ====================
+menuBtn.addEventListener("touchstart", dragStart, { passive: true });
+menuBtn.addEventListener("mousedown", dragStart);
+
+function dragStart(e) {
+    if (e.type === "touchstart") {
+        initialX = e.touches[0].clientX - xOffset;
+    } else {
+        initialX = e.clientX - xOffset;
+    }
+    isDragging = true;
+}
+
+document.addEventListener("touchmove", drag, { passive: false });
+document.addEventListener("mousemove", drag);
+
+function drag(e) {
+    if (!isDragging) return;
+    e.preventDefault();
+
+    let currentX = (e.type === "touchmove") ? e.touches[0].clientX - initialX : e.clientX - initialX;
+
+    const maxX = window.innerWidth - menuBtn.offsetWidth - 16;
+    xOffset = Math.min(Math.max(16, currentX), maxX);
+
+    menuBtn.style.left = xOffset + "px";
+    menuBtn.style.top = yOffset + "px";
+}
+
+document.addEventListener("touchend", () => { isDragging = false; });
+document.addEventListener("mouseup", () => { isDragging = false; });
+
+// Optional: Tap on chat area to close menu
+chatContainer.addEventListener("click", () => {
+    if (sidebar.classList.contains("active")) closeMenu();
+});
+
+
+
+
+
+
+// share profile link code 
+// Share Profile Functions - FIXED
+function showShareModal() {
+    const modal = document.getElementById("share-modal");
+    const linkInput = document.getElementById("share-link-input");
+    
+    // ================== BETTER LINK GENERATION ==================
+    let profileLink = "";
+
+    // Option 1: Use current domain (Recommended for production)
+    const userId = "anmol123"; // Change this dynamically later
+    profileLink = `${window.location.origin}/profile?user=${userId}`;
+
+    // If you want a clean URL like /u/anmol
+    // profileLink = `${window.location.origin}/u/anmol`;
+
+    linkInput.value = profileLink;
+    modal.classList.remove("hidden");
+    modal.classList.add("flex");
+}
+
+function closeShareModal() {
+    const modal = document.getElementById("share-modal");
+    modal.classList.add("hidden");
+    modal.classList.remove("flex");
+}
+
+function copyProfileLink() {
+    const linkInput = document.getElementById("share-link-input");
+    const copyBtn = document.getElementById("copy-btn");
+    
+    linkInput.select();
+    document.execCommand("copy");
+    
+    // Success Feedback
+    const originalHTML = copyBtn.innerHTML;
+    copyBtn.innerHTML = `<i class="ri-check-line text-xl"></i><span>Copied!</span>`;
+    copyBtn.style.background = "linear-gradient(to right, #22c55e, #86efac)";
+    
+    setTimeout(() => {
+        copyBtn.innerHTML = originalHTML;
+        copyBtn.style.background = "";
+    }, 2200);
+}
