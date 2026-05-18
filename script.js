@@ -40,11 +40,43 @@ const firebaseConfig = {
             auth.signInWithPopup(provider).catch(err => alert("Login failed: " + err.message));
         }
 
-        function logout() {
-            if (confirm("Log out of WeatChat?")) {
-                auth.signOut().then(() => window.location.reload());
-            }
-        }
+        // Show Logout Confirmation Popup
+function logout() {
+    const popup = document.getElementById("logout-confirm-popup");
+    popup.classList.remove("hidden");
+    popup.classList.add("flex");
+}
+
+// Cancel Logout
+function cancelLogout() {
+    const popup = document.getElementById("logout-confirm-popup");
+    popup.classList.add("hidden");
+    popup.classList.remove("flex");
+}
+
+// Confirm Logout
+function confirmLogout() {
+    const popup = document.getElementById("logout-confirm-popup");
+    
+    if (currentUser?.uid) {
+        db.ref('users/' + currentUser.uid).update({
+            isOnline: false,
+            lastOnline: Date.now()
+        });
+    }
+
+    auth.signOut().then(() => {
+        popup.classList.add("hidden");
+        popup.classList.remove("flex");
+        
+        // Success Message
+        showCustomPopup("👋 Logged out successfully", "logout");
+        
+        setTimeout(() => {
+            window.location.reload();
+        }, 1500);
+    });
+}
 
         function checkAndSetDisplayName(user) {
             db.ref('users/' + user.uid).once('value', snapshot => {
@@ -61,9 +93,27 @@ const firebaseConfig = {
         }
 
         function saveDisplayName() {
-            const name = document.getElementById('display-name-input').value.trim();
-            if (!name) return alert("Please enter a name");
+    const nameInput = document.getElementById('display-name-input');
+    const name = nameInput.value.trim();
 
+    if (!name) return showCustomPopup("Please enter a name", true);
+    if (name.length < 3) return showCustomPopup("Name should be at least 3 characters long", true);
+
+    db.ref('users').once('value', snapshot => {
+        const allUsers = snapshot.val() || {};
+        let nameTaken = false;
+
+        Object.values(allUsers).forEach(user => {
+            if (user.displayName && user.displayName.toLowerCase() === name.toLowerCase()) {
+                nameTaken = true;
+            }
+        });
+
+        if (nameTaken) {
+            showCustomPopup(`❌ "${name}" is already taken!<br><br>Please add some characters or numbers.<br>Example: ${name}123, ${name}X, ${name}07`, true);
+            nameInput.focus();
+        } else {
+            // Save Name
             const profileData = {
                 ...window.tempGoogleProfile,
                 displayName: name,
@@ -76,8 +126,30 @@ const firebaseConfig = {
                 currentUser = profileData;
                 renderCurrentUserAvatar();
                 loadAllUsers();
+                showCustomPopup(`Welcome, ${name}! 🎉`, false);
             });
         }
+    });
+}
+
+        // function saveDisplayName() {
+        //     const name = document.getElementById('display-name-input').value.trim();
+        //     if (!name) return alert("Please enter a name");
+
+        //     const profileData = {
+        //         ...window.tempGoogleProfile,
+        //         displayName: name,
+        //         isOnline: true,
+        //         lastOnline: Date.now()
+        //     };
+
+        //     db.ref('users/' + profileData.uid).set(profileData).then(() => {
+        //         hideNameModal();
+        //         currentUser = profileData;
+        //         renderCurrentUserAvatar();
+        //         loadAllUsers();
+        //     });
+        // }
 
         function hideNameModal() {
             document.getElementById('name-modal').classList.add('hidden');
@@ -276,15 +348,31 @@ function closeProfileModal() {
 function updateName() {
     const newName = document.getElementById("editName").value.trim();
 
-    if (!newName) return alert("Enter name");
+    if (!newName) {
+        showCustomPopup("Please enter a name", "error");
+        return;
+    }
+
+    if (!currentUser) return;
 
     db.ref("users/" + currentUser.uid).update({
         displayName: newName
+    }).then(() => {
+        currentUser.displayName = newName;
+        
+        // Update avatar name if needed
+        renderCurrentUserAvatar();
+        
+        // Show Success Popup
+        showCustomPopup(`✅ Name updated successfully!<br><b>${newName}</b>`, "success");
+        
+        // Auto close profile modal after 1.5 sec
+        setTimeout(() => {
+            closeProfileModal();
+        }, 1800);
     });
-
-    currentUser.displayName = newName;
-    alert("Name updated 😏");
 }
+
       // Start the app
 function startApp() {
     initializeFirebase();
@@ -543,4 +631,38 @@ async function copyProfileLink() {
     } catch (err) {
         alert("Failed to copy");
     }
+}
+
+
+
+
+// same username error suggestion 
+// Show Custom Popup
+
+function showCustomPopup(message, type = "success") {
+    const popup = document.getElementById("custom-popup");
+    const content = document.getElementById("popup-content");
+
+    let icon = "";
+    if (type === "success") {
+        icon = `<i class="ri-check-circle-fill text-5xl text-green-400"></i>`;
+    } else if (type === "error") {
+        icon = `<i class="ri-error-warning-fill text-5xl text-red-400"></i>`;
+    } else if (type === "logout") {
+        icon = `<i class="ri-logout-circle-r-line text-5xl text-violet-400"></i>`;
+    }
+
+    content.innerHTML = `
+        <div class="mb-6">${icon}</div>
+        <p class="text-xl font-medium leading-relaxed">${message}</p>
+    `;
+
+    popup.classList.remove("hidden");
+    popup.classList.add("flex");
+}
+
+function closeCustomPopup() {
+    const popup = document.getElementById("custom-popup");
+    popup.classList.add("hidden");
+    popup.classList.remove("flex");
 }
