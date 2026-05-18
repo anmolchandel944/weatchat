@@ -285,25 +285,67 @@ function updateName() {
     currentUser.displayName = newName;
     alert("Name updated 😏");
 }
-        // Start the app
-        function startApp() {
-            initializeFirebase();
+      // Start the app
+function startApp() {
+    initializeFirebase();
+    
+    auth.onAuthStateChanged(user => {
+        if (user) {
+            document.getElementById('login-screen').classList.add('hidden');
+            document.getElementById('main-app').classList.remove('hidden');
             
-            auth.onAuthStateChanged(user => {
-                if (user) {
-                    document.getElementById('login-screen').classList.add('hidden');
-                    document.getElementById('main-app').classList.remove('hidden');
-                    currentUser = user;
-                    checkAndSetDisplayName(user);
-                } else {
-                    document.getElementById('login-screen').classList.remove('hidden');
-                    document.getElementById('main-app').classList.add('hidden');
+            currentUser = user;
+            checkAndSetDisplayName(user);
+            
+            // Better way: Call after user data is fully loaded
+            setTimeout(() => {
+                if (currentUser?.uid) {
+                    handleInviteLink();
                 }
-            });
+            }, 1800);
+
+        } else {
+            document.getElementById('login-screen').classList.remove('hidden');
+            document.getElementById('main-app').classList.add('hidden');
         }
+    });
+}
 
-        window.onload = startApp;
+window.onload = startApp;
 
+
+        // Handle Invite Link when someone opens shared link
+function handleInviteLink() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const inviteUid = urlParams.get('invite');
+
+    if (inviteUid && currentUser) {
+        // Agar current user khud hi apna link khola to ignore
+        if (inviteUid === currentUser.uid) return;
+
+        db.ref('users/' + inviteUid).once('value', snapshot => {
+            const invitedUser = snapshot.val();
+            
+            if (invitedUser) {
+                // Auto open chat with that user
+                openChat(invitedUser);
+                
+                // Optional: Show nice toast
+                showToast(`Opened profile of ${invitedUser.displayName}`);
+            }
+        });
+    }
+}
+
+// Simple Toast Notification
+function showToast(message) {
+    const toast = document.createElement('div');
+    toast.className = "fixed bottom-6 left-1/2 -translate-x-1/2 bg-white/10 backdrop-blur-md text-white px-6 py-3 rounded-2xl z-[99999]";
+    toast.textContent = message;
+    document.body.appendChild(toast);
+    
+    setTimeout(() => toast.remove(), 3000);
+}
 
 
      const GIPHY_API_KEY = "94014f96cc74db1d734668b57c906f3b2d260f4e"; // get from giphy
@@ -456,24 +498,21 @@ chatContainer.addEventListener("click", () => {
 
 
 
-
-// share profile link code 
-// Share Profile Functions - FIXED
+ // ================== FIXED & IMPROVED SHARE PROFILE ==================
 function showShareModal() {
+    if (!currentUser) {
+        alert("Please login first!");
+        return;
+    }
+
     const modal = document.getElementById("share-modal");
     const linkInput = document.getElementById("share-link-input");
+
+    // Auto Generate Unique Link for every user
+    const shareLink = `${window.location.origin}${window.location.pathname}?invite=${currentUser.uid}`;
+
+    linkInput.value = shareLink;
     
-    // ================== BETTER LINK GENERATION ==================
-    let profileLink = "";
-
-    // Option 1: Use current domain (Recommended for production)
-    const userId = "anmol123"; // Change this dynamically later
-    profileLink = `${window.location.origin}/profile?user=${userId}`;
-
-    // If you want a clean URL like /u/anmol
-    // profileLink = `${window.location.origin}/u/anmol`;
-
-    linkInput.value = profileLink;
     modal.classList.remove("hidden");
     modal.classList.add("flex");
 }
@@ -484,20 +523,24 @@ function closeShareModal() {
     modal.classList.remove("flex");
 }
 
-function copyProfileLink() {
+async function copyProfileLink() {
     const linkInput = document.getElementById("share-link-input");
     const copyBtn = document.getElementById("copy-btn");
-    
-    linkInput.select();
-    document.execCommand("copy");
-    
-    // Success Feedback
-    const originalHTML = copyBtn.innerHTML;
-    copyBtn.innerHTML = `<i class="ri-check-line text-xl"></i><span>Copied!</span>`;
-    copyBtn.style.background = "linear-gradient(to right, #22c55e, #86efac)";
-    
-    setTimeout(() => {
-        copyBtn.innerHTML = originalHTML;
-        copyBtn.style.background = "";
-    }, 2200);
+
+    try {
+        await navigator.clipboard.writeText(linkInput.value);
+        
+        // Success Animation
+        const originalHTML = copyBtn.innerHTML;
+        copyBtn.innerHTML = `<i class="ri-check-line text-xl"></i><span>Copied!</span>`;
+        copyBtn.style.background = "linear-gradient(to right, #22c55e, #86efac)";
+
+        setTimeout(() => {
+            copyBtn.innerHTML = originalHTML;
+            copyBtn.style.background = "";
+        }, 2200);
+
+    } catch (err) {
+        alert("Failed to copy");
+    }
 }
