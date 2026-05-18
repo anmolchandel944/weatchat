@@ -4,7 +4,7 @@
         :root { --neon-cyan: #00f7ff; }
         
         * { transition: all 0.2s ease; }
-        
+        /*  */
         .glass {
             background: rgba(15, 23, 42, 0.65);
             backdrop-filter: blur(16px);
@@ -317,3 +317,182 @@
 #messages-container::-webkit-scrollbar-thumb {
     box-shadow: inset 0 0 10px rgba(255,255,255,0.3);
 }
+
+
+
+
+
+/* for responsive devices  */
+
+@media (max-width: 1024px) {
+    .chat-bubble-received {
+        font-size: 13px;
+        max-width: 88%;
+        border-radius: 18px;
+    }
+
+    /* Input Box */
+    #chat-screen > div:last-child {
+        padding: 10px;
+    }
+
+    #message-input {
+        font-size: 13px;
+    }
+
+    .icon-btn {
+        width: 40px;
+        height: 40px;
+        border-radius: 14px;
+    }
+
+    /* Footer */
+    .footer,
+    #welcome-screen p:last-child {
+        font-size: 11px;
+        line-height: 1.5;
+    }
+
+    /* Profile Modal */
+    #profileModal .glass {
+        border-radius: 24px;
+    }
+
+    /* Search Box */
+    .glass.rounded-3xl {
+        border-radius: 20px;
+    }
+}
+
+
+/* ============================================
+   EXTRA SMALL DEVICES
+============================================ */
+
+@media (max-width: 360px) {
+
+    .logo-text-big {
+        font-size: 26px;
+    }
+
+    #welcome-screen h2 {
+        font-size: 20px;
+    }
+
+    .chat-bubble-sent,
+    .chat-bubble-received {
+        font-size: 12px;
+        padding: 10px 12px;
+    }
+
+    .icon-btn {
+        width: 36px;
+        height: 36px;
+        font-size: 16px;
+    }
+
+    #message-input {
+        font-size: 12px;
+    }
+}
+
+
+
+
+
+
+ @media (max-width: 768px) {
+    #menu-btn {
+        display: block;
+        touch-action: none;
+    }
+
+    #hamburger-icon {
+        transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    #menu-btn.active #hamburger-icon {
+        transform: rotate(90deg);
+    }
+
+    /* Sidebar */
+    #sidebar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 100dvh;
+        transform: translateX(-100%);
+        transition: transform 0.35s cubic-bezier(0.32, 0.72, 0, 1);
+        z-index: 9999;
+        box-shadow: 5px 0 20px rgba(0, 0, 0, 0.4);
+    }
+
+    #sidebar.active {
+        transform: translateX(0);
+    }
+
+    /* Hide Chat Content Completely */
+    #chat-container {
+        opacity: 1;
+        visibility: visible;
+        transition: all 0.35s ease;
+    }
+
+    #chat-container.hidden {
+        opacity: 0;
+        visibility: hidden;
+        transform: scale(0.95);
+        pointer-events: none;
+    }
+}
+
+@media (max-width: 768px) {
+    #menu-btn {
+        display: block;
+        touch-action: none;
+    }
+
+    /* ===== ICON ROTATION ===== */
+    #hamburger-icon {
+        transition: transform 0.4s cubic-bezier(0.4, 0.0, 0.2, 1);
+    }
+
+    #menu-btn.active #hamburger-icon {
+        transform: rotate(90deg);
+    }
+
+    /* Sidebar */
+    #sidebar {
+        height: 100dvh;
+        box-shadow: 5px 0 20px rgba(0, 0, 0, 0.4);
+    }
+
+    #sidebar.active {
+        transform: translateX(0) !important;
+    }
+
+    /* Hide Chat Content */
+    #chat-container.hidden {
+        opacity: 0;
+        visibility: hidden;
+        transform: scale(0.95);
+        pointer-events: none;
+    }
+}
+
+
+/* Share Modal Styling */
+#share-modal {
+    animation: fadeIn 0.3s ease;
+}
+
+.glass {
+    background: rgba(15, 15, 25, 0.95);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+} 
