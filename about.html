@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<link href="https://cdn.jsdelivr.net/npm/remixicon@4.9.0/fonts/remixicon.css" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"/>
+
+<title>About WeatChat</title>
+
+
+<style>
+
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap');
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:'Poppins',sans-serif;background:linear-gradient(135deg,#0f172a,#1e1b4b,#3b0764);color:#fff;overflow-x:hidden;min-height:100vh;position:relative}
+
+/* FLOATING EMOJIS */
+#emoji-bg{position:fixed;inset:0;overflow:hidden;pointer-events:none;z-index:0}
+.emoji{position:absolute;bottom:-100px;font-size:2rem;opacity:.5;animation:floatUp linear forwards;user-select:none}
+@keyframes floatUp{0%{transform:translateY(0) rotate(0);opacity:0}10%{opacity:.5}100%{transform:translateY(-130vh) rotate(35deg);opacity:0}}
+
+/* GLASS */
+.glass{background:rgba(255,255,255,.07);backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,.1)}
+
+/* NAV */
+nav{background:rgba(0,0,0,.35);backdrop-filter:blur(14px);border-bottom:1px solid rgba(255,255,255,.08)}
+
+/* LOGO */
+.logo-text{font-size:2rem;font-weight:800;background:linear-gradient(90deg,#a855f7,#ec4899,#22d3ee);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+
+/* BUTTON */
+.glow-btn{transition:.3s ease}
+.glow-btn:hover{transform:translateY(-4px) scale(1.03);box-shadow:0 10px 30px rgba(168,85,247,.4)}
+
+/* CARD */
+.info-card{transition:.3s ease}
+.info-card:hover{transform:translateY(-6px);border-color:rgba(236,72,153,.5)}
+
+/* RESPONSIVE */
+@media(max-width:768px){
+.hero-title{font-size:2.7rem!important;line-height:1.1}
+.hero-desc{font-size:1rem!important}
+.logo-text{font-size:1.5rem}
+.section-title{font-size:2rem!important}
+.footer-icons{gap:18px!important;font-size:2rem!important}
+}
+@media(max-width:480px){
+.hero-title{font-size:2.1rem!important}
+.section-title{font-size:1.7rem!important}
+}
+
+
+/* LIVE CHAT */
+
+.live-msg{
+max-width:85%;
+padding:12px 16px;
+border-radius:20px;
+font-size:.95rem;
+animation:msgPop .35s ease;
+word-wrap:break-word
+}
+
+/* VERIFIED BADGE */
+
+.verified-badge{
+color:#38bdf8;
+font-size:1.2rem;
+margin-left:6px;
+vertical-align:middle;
+filter:drop-shadow(0 0 8px rgba(56, 191, 248, 0))
+}
+
+.live-left{
+background:rgba(255,255,255,.08);
+border-top-left-radius:6px;
+margin-right:auto
+}
+
+.live-right{
+background:linear-gradient(90deg,#00f7ff,#00b8d4);
+color:#0f172a;
+border-top-right-radius:6px;
+margin-left:auto
+}
+
+@keyframes msgPop{
+
+from{
+opacity:0;
+transform:translateY(10px) scale(.95)
+}
+
+to{
+opacity:1;
+transform:translateY(0) scale(1)
+}
+
+}
+
+/* MOBILE */
+
+@media(max-width:768px){
+
+#live-chat-box{
+height:250px
+}
+
+.live-msg{
+font-size:.88rem
+}
+
+}
+
+
+</style>
+</head>
+
+<body>
+
+<div id="emoji-bg"></div>
+
+<nav class="fixed top-0 left-0 w-full z-50">
+<div class="max-w-7xl mx-auto px-5 py-4 flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="text-4xl"><i class="ri-chat-smile-2-line"></i></div>
+<h1 class="logo-text">WeatChat</h1>
+</div>
+<a href="https://anmolchandel944.github.io/weatchat/" class="glow-btn px-5 py-3 rounded-full bg-gradient-to-r from-purple-600 to-pink-600 font-medium">Home</a>
+</div>
+</nav>
+
+<section class="relative z-10 min-h-screen flex items-center justify-center px-5 pt-32 pb-20">
+<div class="max-w-6xl mx-auto text-center">
+<div class="inline-flex items-center gap-2 px-5 py-3 rounded-full glass mb-8">
+<span class="w-3 h-3 bg-green-400 rounded-full animate-pulse"></span>
+Built for Privacy & Real Conversations
+</div>
+<h1 class="hero-title text-5xl md:text-7xl font-extrabold leading-tight mb-8">
+Why We Created <span class="bg-gradient-to-r from-cyan-400 via-pink-400 to-purple-400 bg-clip-text text-transparent">WeatChat</span>
+</h1>
+<p class="hero-desc text-lg md:text-xl text-slate-300 max-w-3xl mx-auto leading-relaxed">
+WeatChat was created with one simple idea — make chatting more private, simple, stress-free and focused on real human connections.
+</p>
+<div class="mt-10 flex flex-col sm:flex-row gap-5 justify-center">
+<a href="https://anmolchandel944.github.io/weatchat/" class="glow-btn px-8 py-4 rounded-2xl bg-white text-black font-semibold text-lg">Start Chatting</a>
+<a href="#features" class="glow-btn px-8 py-4 rounded-2xl border border-white/20 glass text-lg">Explore Features</a>
+</div>
+</div>
+</section>
+
+<!-- LIVE CHAT SIMULATION -->
+
+<div class="glass rounded-3xl p-5 max-w-md mx-auto mt-16 overflow-hidden">
+
+<div class="flex items-center gap-3 mb-5">
+
+<div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-cyan-400 to-purple-500 flex items-center justify-center text-2xl">
+<i class="ri-chat-smile-2-line"></i>
+</div>
+
+<div>
+
+<h3 class="font-semibold text-xl">
+Weatchat Team 
+<i class="ri-verified-badge-fill verified-badge"></i>
+</h3>
+
+<p class="text-sm text-green-400">
+● Online Now
+</p>
+
+</div>
+
+</div>
+
+
+<!-- CHAT BOX -->
+
+<div id="live-chat-box"
+class="space-y-3 h-72 overflow-y-auto pr-2">
+
+</div>
+
+</div>
+
+<section class="relative z-10 py-20 px-5">
+<div class="max-w-7xl mx-auto">
+
+<div class="mb-24">
+<h2 class="section-title text-4xl md:text-5xl font-bold text-center mb-12">The Main Motive Behind WeatChat</h2>
+<div class="glass rounded-3xl p-8 md:p-12 text-slate-300 leading-relaxed text-lg">
+<p class="mb-6">Most chatting platforms today are designed to keep users engaged for hours with constant notifications and distractions.</p>
+<p class="mb-6">WeatChat was created differently. The goal is not addiction — the goal is meaningful communication.</p>
+<p class="mb-6">There are no aggressive notifications constantly disturbing users.</p>
+<p class="mb-6">We believe privacy and simplicity matter.</p>
+<p>The platform helps users connect with strangers and share profile links easily.</p>
+</div>
+</div>
+
+<div id="features" class="mb-24">
+<h2 class="section-title text-4xl md:text-5xl font-bold text-center mb-14">Core Features</h2>
+<div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+<div class="info-card glass rounded-3xl p-8"><div class="text-5xl mb-6">🔒</div><h3 class="text-2xl font-semibold mb-4">Privacy Focused</h3><p class="text-slate-300">WeatChat focuses on user privacy instead of aggressive tracking.</p></div>
+<div class="info-card glass rounded-3xl p-8"><div class="text-5xl mb-6">🚫</div><h3 class="text-2xl font-semibold mb-4">No Notification Stress</h3><p class="text-slate-300">Users are not constantly distracted with notifications.</p></div>
+<div class="info-card glass rounded-3xl p-8"><div class="text-5xl mb-6">🔍</div><h3 class="text-2xl font-semibold mb-4">Search Friends</h3><p class="text-slate-300">Search users easily and instantly start conversations.</p></div>
+<div class="info-card glass rounded-3xl p-8"><div class="text-5xl mb-6">🔗</div><h3 class="text-2xl font-semibold mb-4">Profile Sharing</h3><p class="text-slate-300">Share your profile link directly with others.</p></div>
+<div class="info-card glass rounded-3xl p-8"><div class="text-5xl mb-6">🌍</div><h3 class="text-2xl font-semibold mb-4">Meet New People</h3><p class="text-slate-300">Discover and chat with strangers around the platform.</p></div>
+<div class="info-card glass rounded-3xl p-8"><div class="text-5xl mb-6">🛡️</div><h3 class="text-2xl font-semibold mb-4">Simple Login System</h3><p class="text-slate-300">Google Login makes signing in simple and secure.</p></div>
+</div>
+</div>
+
+<div class="mb-24">
+<h2 class="section-title text-4xl md:text-5xl font-bold text-center mb-14">User Control & Data</h2>
+<div class="grid md:grid-cols-2 gap-8">
+<div class="glass rounded-3xl p-8"><h3 class="text-2xl font-semibold mb-5">Account Flexibility</h3><p class="text-slate-300">Users can logout anytime and change usernames later.</p></div>
+<div class="glass rounded-3xl p-8"><h3 class="text-2xl font-semibold mb-5">Data Removal</h3><p class="text-slate-300">Users can request complete data deletion at any time.</p></div>
+</div>
+</div>
+
+<div class="text-center">
+<div class="glass rounded-3xl p-10 max-w-3xl mx-auto">
+<div class="mb-6 flex justify-center">
+<img src="pic-1.png" alt="Founder" class="w-32 h-32 rounded-full object-cover border-4 border-cyan-400 hover:scale-105 transition duration-300">
+</div>
+<h2 class="text-4xl font-bold mb-4">Founder & Developer</h2>
+<p class="text-2xl text-cyan-400 font-semibold mb-6">Anmol Chandel</p>
+<p class="text-slate-300 leading-relaxed text-lg">WeatChat was independently designed and developed with a vision for a modern, aesthetic, and privacy-focused chatting experience.</p>
+</div>
+</div>
+
+</div>
+</section>
+
+<footer class="relative z-10 bg-white/[0.03] backdrop-blur-md border-t border-white/5 py-8 mt-16">
+<div class="max-w-7xl mx-auto px-5 text-center">
+<div class="flex justify-center items-center gap-3 mb-8">
+<div class="text-5xl"><i class="ri-chat-smile-2-line"></i></div>
+<h1 class="logo-text text-4xl">WeatChat</h1>
+</div>
+<p class="text-slate-400 mb-8 text-lg">Built with creativity, privacy and real communication.</p>
+<div class="footer-icons flex flex-wrap justify-center gap-8 text-4xl mb-10">
+<a href="#" class="hover:text-pink-500 transition"><i class="fab fa-instagram"></i></a>
+<a href="#" class="hover:text-blue-400 transition"><i class="fab fa-x-twitter"></i></a>
+<a href="#" class="hover:text-cyan-400 transition"><i class="fab fa-discord"></i></a>
+<a href="#" class="hover:text-red-400 transition"><i class="fas fa-envelope"></i></a>
+</div>
+<p class="text-slate-500">© 2026 WeatChat • Designed & Developed by Anmol Chandel.</p>
+</div>
+</footer>
+
+</body>
+</html>
+<script>
+const emojis=["💬","🔥","💔","✨","🚀","😎","💻","😘","📱","❤️","😏","👀","🎯","🤭","🌟","💡"];
+
+const emojiBg=document.getElementById("emoji-bg");
+
+function createEmoji(){
+
+const emoji=document.createElement("div");
+
+emoji.className="emoji";
+
+emoji.innerText=
+emojis[Math.floor(Math.random()*emojis.length)];
+
+emoji.style.left=Math.random()*100+"vw";
+
+emoji.style.fontSize=
+(18+Math.random()*28)+"px";
+
+emoji.style.animationDuration=
+(8+Math.random()*10)+"s";
+
+emoji.style.opacity=
+(0.15+Math.random()*0.3);
+
+emojiBg.appendChild(emoji);
+
+setTimeout(()=>{
+
+emoji.remove();
+
+},18000);
+
+}
+
+setInterval(createEmoji,500);
+
+
+/* LIVE CHAT */
+
+window.addEventListener("DOMContentLoaded",()=>{
+
+const demoMessages=[
+
+{text:"Hi 👋",type:"left"},
+{text:"Hello 😄",type:"right"},
+{text:"Welcome to WeatChat 💜",type:"left"},
+{text:"Thanks ✨",type:"right"},
+{text:"Can you tell me what is WeatChat?",type:"right"},
+{text:"WeatChat is a private messaging platform 🔒",type:"left"},
+{text:"Oh nice 😍",type:"right"},
+{text:"You can search friends & share profile links too 🚀",type:"left"},
+{text:"That's cool 🔥",type:"right"},
+{text:"Thnx 😄",type:"left"}
+
+];
+
+const liveChatBox=
+document.getElementById("live-chat-box");
+
+if(!liveChatBox) return;
+
+let msgIndex=0;
+
+function addLiveMessage(){
+
+const msg=demoMessages[msgIndex];
+
+const div=document.createElement("div");
+
+div.className=
+`live-msg ${
+msg.type==="left"
+?"live-left"
+:"live-right"
+}`;
+
+div.innerText=msg.text;
+
+liveChatBox.appendChild(div);
+
+liveChatBox.scrollTop=
+liveChatBox.scrollHeight;
+
+msgIndex++;
+
+if(msgIndex>=demoMessages.length){
+
+setTimeout(()=>{
+
+liveChatBox.innerHTML="";
+
+msgIndex=0;
+
+},2500);
+
+}
+
+}
+
+addLiveMessage();
+
+setInterval(addLiveMessage,1800);
+
+});
+</script>
+
+</body>
+</html>
