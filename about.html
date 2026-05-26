@@ -375,15 +375,19 @@ setInterval(addLiveMessage,1800);
 });
 /* VISITOR COUNTER */
 
-fetch("https://api.countapi.xyz/hit/anmolchandel944/weatchat-about")
+fetch("https://api.countapi.xyz/hit/anmolchandel944.github.io/weatchat-about")
 
 .then(res=>res.json())
 
 .then(data=>{
 
-document.getElementById(
-"visitor-count"
-).innerText=data.value;
+document.getElementById("visitor-count").innerText=data.value;
+
+})
+
+.catch(err=>{
+
+console.log("Counter Error:",err);
 
 });
 </script>
